@@ -5,7 +5,8 @@ def main():
     ventana = tk.Tk()
     ventana.title("Mis pelis y series")
     ventana.iconbitmap('img/videocamara.ico')
-    ventana.resizable(False, False)
+    ventana.geometry("800x670")
+    ventana.resizable(0, 0)
 
     barrita_menu(ventana)
     app = Frame(root = ventana) #instanciamos la clase Frame

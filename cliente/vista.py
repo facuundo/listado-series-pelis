@@ -11,6 +11,8 @@ class Frame(tk.Frame):
         self.label_form()
         self.input_form()
         self.botones_principales()
+        self.tabla_peliculas()
+        self.tabla_series()
         self.bloquear_campos() #se bloquean todos los campos cuando se inicializa porque no se tocó editar
 
     def label_form(self):
@@ -68,6 +70,42 @@ class Frame(tk.Frame):
         self.btn_modi.config(state='disabled')
         self.btn_cance.config(state='disabled')
         self.btn_alta.config(state='normal')
+
+    #ver si poner en init o no: hacer tabla con ttk.Treeview https://github.com/LuisOchoa1495/Python-Tkinter/blob/master/SISTEMA%20DESKTOP/4-CRUD.py
+    def tabla_peliculas(self):
+        self.tree = ttk.Treeview(height=10, columns=("columna1", "columna2", "columna3"))
+        self.tree.heading('#0', text='ID', anchor='center')
+        self.tree.column("#0", width=90, minwidth=75, stretch='no')
+
+        self.tree.heading('columna1', text='Nombre', anchor='center')
+        self.tree.column("columna1", width=150, minwidth=75, stretch='no')
+
+        self.tree.heading('columna2', text='Genero', anchor='center')
+        self.tree.column("columna2", width=150, minwidth=75, stretch='no')
+
+        self.tree.heading('columna3', text='Plataforma', anchor='center')
+        self.tree.column("columna3", width=150, minwidth=75, stretch='no')
+
+        self.tree.pack()
+
+    def tabla_series(self):
+        self.tree = ttk.Treeview(height=10, columns=("columna1", "columna2", "columna3", "columna4"))
+        self.tree.heading('#0', text='ID', anchor='center')
+        self.tree.column("#0", width=90, minwidth=75, stretch='no')
+
+        self.tree.heading('columna1', text='Nombre', anchor='center')
+        self.tree.column("columna1", width=150, minwidth=75, stretch='no')
+
+        self.tree.heading('columna2', text='Num Temporadas', anchor='center')
+        self.tree.column("columna2", width=150, minwidth=75, stretch='no')
+
+        self.tree.heading('columna3', text='Genero', anchor='center')
+        self.tree.column("columna3", width=150, minwidth=75, stretch='no')
+
+        self.tree.heading('columna4', text='Plataforma', anchor='center')
+        self.tree.column("columna4", width=150, minwidth=75, stretch='no')
+
+        self.tree.pack()
 
 def barrita_menu(root):
     #esto puede ir en otro archivo
