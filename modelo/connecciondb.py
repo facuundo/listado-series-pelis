@@ -1,11 +1,11 @@
 import sqlite3
 
-class ConeccionDB():
+class Conneccion():
     def __init__(self):
-        self.base_datos = 'bbdd-pelis-series.db'
+        self.base_datos = 'ddbb/peliculas.db'
         self.conexion = sqlite3.connect(self.base_datos)
         self.cursor = self.conexion.cursor()
 
-    def cerrar_conexion(self):
+    def cerrar_con(self):
         self.conexion.commit()
         self.conexion.close()
