@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from modelo.consultas_dao import Peliculas,crear_tabla, guardar_peli,listar_peli,listar_generos,editar_peli,borrar_peli
+from modelo.consultas_dao import Peliculas,crear_tabla, guardar_peli,listar_peli,listar_generos,listar_plataformas,editar_peli,borrar_peli
 
 class Frame(tk.Frame):  
     def __init__(self, root = None):    
@@ -27,6 +27,9 @@ class Frame(tk.Frame):
         self.label_nombre = tk.Label(self, text="Genero: ")    
         self.label_nombre.config(font=('Arial',12,'bold'))    
         self.label_nombre.grid(row= 2, column=0,padx=10,pady=10)
+        self.label_nombre = tk.Label(self, text="Plataforma: ")    
+        self.label_nombre.config(font=('Arial',12,'bold'))    
+        self.label_nombre.grid(row= 3, column=0,padx=10,pady=10)
     
     def input_form(self):
         self.nombre = tk.StringVar()    
@@ -51,25 +54,39 @@ class Frame(tk.Frame):
         self.entry_genero.config(width=25)    
         self.entry_genero.bind("<<ComboboxSelected>>")    
         self.entry_genero.grid(row= 2, column=1,padx=10,pady=10)
+
+        a = listar_plataformas()
+        b = []
+        for c in a:
+            b.append(c[1])
+
+        self.plataformas = ['Selecione Uno'] + b
+        self.entry_plataforma = ttk.Combobox(self, state="readonly")
+        self.entry_plataforma['values'] = self.plataformas
+        self.entry_plataforma.current(0)
+        self.entry_plataforma.config(width=25)    
+        self.entry_plataforma.bind("<<ComboboxSelected>>")    
+        self.entry_plataforma.grid(row= 3, column=1,padx=10,pady=10)
     
     def botones_principales(self):    
         self.btn_alta = tk.Button(self, text='Nuevo', command= self.habilitar_campos)    
         self.btn_alta.config(width= 20,font=('Arial', 12,'bold'),fg ='#FFFFFF' ,bg='#1C500B',cursor='hand2',activebackground='#3FD83F',activeforeground='#000000')    
-        self.btn_alta.grid(row= 3, column=0,padx=10,pady=10)    
+        self.btn_alta.grid(row= 4, column=0,padx=10,pady=10)    
         
         self.btn_modi = tk.Button(self, text='Guardar', command=self.guardar_campos)    
         self.btn_modi.config(width= 20,font=('Arial', 12,'bold'),fg ='#FFFFFF' ,bg='#0D2A83',cursor='hand2',activebackground='#7594F5',activeforeground='#000000')    
-        self.btn_modi.grid(row= 3, column=1,padx=10,pady=10)    
+        self.btn_modi.grid(row= 4, column=1,padx=10,pady=10)    
         
         self.btn_cance = tk.Button(self, text='Cancelar', command=self.bloquear_campos)    
         self.btn_cance.config(width= 20,font=('Arial', 12,'bold'),fg ='#FFFFFF' ,bg='#A90A0A',cursor='hand2',activebackground='#F35B5B',activeforeground='#000000')    
-        self.btn_cance.grid(row= 3, column=2,padx=10,pady=10)
+        self.btn_cance.grid(row= 4, column=2,padx=10,pady=10)
     
     def guardar_campos(self):
         pelicula = Peliculas(
             self.nombre.get(),
             self.duracion.get(),
-            self.entry_genero.current()
+            self.entry_genero.current(),
+            self.entry_plataforma.current()
         )
 
         if self.id_peli == None:
@@ -83,7 +100,8 @@ class Frame(tk.Frame):
     def habilitar_campos(self):    
         self.entry_nombre.config(state='normal')    
         self.entry_duracion.config(state='normal')    
-        self.entry_genero.config(state='normal')    
+        self.entry_genero.config(state='normal')
+        self.entry_plataforma.config(state='normal')    
         self.btn_modi.config(state='normal')    
         self.btn_cance.config(state='normal')    
         self.btn_alta.config(state='disabled')
@@ -98,6 +116,7 @@ class Frame(tk.Frame):
         self.nombre.set('')
         self.duracion.set('')
         self.entry_genero.current(0)
+        self.entry_plataforma.current(0)
         self.id_peli = None
     
     def mostrar_tabla(self):
@@ -106,29 +125,30 @@ class Frame(tk.Frame):
         
         self.lista_p.reverse()
 
-        self.tabla = ttk.Treeview(self, columns=('Nombre','Duración','Genero'))
-        self.tabla.grid(row=4,column=0,columnspan=4, sticky='nse')
+        self.tabla = ttk.Treeview(self, columns=('Nombre','Duración','Genero','Plataforma'))
+        self.tabla.grid(row=5,column=0,columnspan=5, sticky='nse')
 
         self.scroll = ttk.Scrollbar(self, orient='vertical', command= self.tabla.yview)
-        self.scroll.grid(row=4,column=4, sticky='nse')
+        self.scroll.grid(row=5,column=5, sticky='nse')
         self.tabla.configure(yscrollcommand=self.scroll.set)
 
         self.tabla.heading('#0', text='ID')
         self.tabla.heading('#1', text='Nombre')
         self.tabla.heading('#2', text='Duración')
         self.tabla.heading('#3', text='Genero')
+        self.tabla.heading('#4', text='Plataforma')
 
         for p in self.lista_p:
             self.tabla.insert('',0,text=p[0],
-                              values=(p[1],p[2],p[5]))
+                              values=(p[1], p[2], p[3], p[4]))
 
         self.btn_editar = tk.Button(self, text='Editar', command=self.editar_registro)    
         self.btn_editar.config(width= 20,font=('Arial', 12,'bold'),fg ='#FFFFFF' ,bg='#1C500B',cursor='hand2',activebackground='#3FD83F',activeforeground='#000000')    
-        self.btn_editar.grid(row= 5, column=0,padx=10,pady=10)    
+        self.btn_editar.grid(row= 6, column=0,padx=10,pady=10)    
         
         self.btn_delete = tk.Button(self, text='delete',command=self.eliminar_regristro)    
         self.btn_delete.config(width= 20,font=('Arial', 12,'bold'),fg ='#FFFFFF' ,bg='#A90A0A',cursor='hand2',activebackground='#F35B5B',activeforeground='#000000')    
-        self.btn_delete.grid(row= 5, column=1,padx=10,pady=10)  
+        self.btn_delete.grid(row= 6, column=1,padx=10,pady=10)  
     
     def editar_registro(self):
         try:
@@ -137,11 +157,14 @@ class Frame(tk.Frame):
             self.nombre_peli = self.tabla.item(self.tabla.selection())['values'][0]
             self.dura_peli = self.tabla.item(self.tabla.selection())['values'][1]
             self.gene_peli = self.tabla.item(self.tabla.selection())['values'][2]
+            self.plat_peli = self.tabla.item(self.tabla.selection())['values'][3]
 
             self.habilitar_campos()
             self.nombre.set(self.nombre_peli)
             self.duracion.set(self.dura_peli)
             self.entry_genero.current(self.generos.index(self.gene_peli))
+            self.entry_plataforma.current(self.plataformas.index(self.plat_peli))
+            
         except:
             pass
     

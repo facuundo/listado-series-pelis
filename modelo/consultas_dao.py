@@ -28,20 +28,21 @@ def crear_tabla():
 
 class Peliculas():
 
-    def __init__(self,nombre,duracion,genero):
+    def __init__(self, nombre, duracion, genero, plataforma):
        self.nombre = nombre
        self.duracion = duracion
        self.genero = genero
+       self.plataforma = plataforma
 
     def __str__(self):
-        return f'Pelicula[{self.nombre},{self.duracion},{self.genero}]'
+        return f'Pelicula[{self.nombre},{self.duracion},{self.genero},{self.plataforma}]'
 
 def guardar_peli(pelicula):
     conn = Conneccion()
 
     sql= f'''
-        INSERT INTO Peliculas(Nombre,Duracion,Genero)
-        VALUES('{pelicula.nombre}','{pelicula.duracion}',{pelicula.genero});
+        INSERT INTO Peliculas(Nombre,Duracion,Genero,Plataforma)
+        VALUES('{pelicula.nombre}','{pelicula.duracion}','{pelicula.genero}','{pelicula.plataforma}');
 '''
     try:
         conn.cursor.execute(sql)
@@ -53,13 +54,13 @@ def listar_peli():
     conn = Conneccion()
     listar_peliculas = []
 
-    sql= f'''
-        SELECT * FROM Peliculas as p
-        INNER JOIN Genero as g
-        ON p.Genero = g.ID;
+    sql = '''
+        SELECT p.ID, p.Nombre, p.Duracion, g.Nombre AS Genero, pl.Nombre AS Plataforma FROM Peliculas p
+        INNER JOIN Genero g ON p.Genero = g.ID
+        INNER JOIN Plataforma pl ON p.Plataforma = pl.ID;
 '''
     try:
-        conn.cursor.execute(sql)
+        conn.cursor.execute(sql)  
         listar_peliculas = conn.cursor.fetchall()
         conn.cerrar_con()
 
@@ -83,13 +84,29 @@ def listar_generos():
         return listar_genero
     except:
         pass
+    
+def listar_plataformas():
+    conn = Conneccion()
+    listar_plataforma = []
+
+    sql= f'''
+        SELECT * FROM Plataforma;
+'''
+    try:
+        conn.cursor.execute(sql)
+        listar_plataforma = conn.cursor.fetchall()
+        conn.cerrar_con()
+
+        return listar_plataforma
+    except:
+        pass
 
 def editar_peli(pelicula, id):
     conn = Conneccion()
 
     sql= f'''
         UPDATE Peliculas
-        SET Nombre = '{pelicula.nombre}', Duracion = '{pelicula.duracion}', Genero = {pelicula.genero}
+        SET Nombre = '{pelicula.nombre}', Duracion = '{pelicula.duracion}', Genero = '{pelicula.genero}', Plataforma = '{pelicula.plataforma}'
         WHERE ID = {id}
         ;
 '''
